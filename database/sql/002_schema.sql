@@ -1,213 +1,236 @@
 -- 002_schema.sql
--- Base Tables
 
+-- ==========================================
+-- ENUMS
+-- ==========================================
+
+CREATE TYPE user_role AS ENUM (
+    'ADMIN',
+    'DOCTOR',
+    'NURSE',
+    'RECEPTIONIST',
+    'CLAIM_OFFICER',
+    'AUDITOR'
+);
+
+CREATE TYPE encounter_status AS ENUM (
+    'Pre-Auth Pending',
+    'Admitted',
+    'Discharged'
+);
+
+CREATE TYPE admission_type AS ENUM (
+    'Emergency',
+    'Elective'
+);
+
+CREATE TYPE claim_status AS ENUM (
+    'Submitted_SHA',
+    'Query_Raised',
+    'PreFlight_Blocked',
+    'Draft',
+    'Approved'
+);
+
+CREATE TYPE file_status AS ENUM (
+    'Uploaded',
+    'Pending'
+);
+
+CREATE TYPE document_status AS ENUM (
+    'PENDING_VERIFICATION',
+    'VERIFIED',
+    'REJECTED'
+);
+
+CREATE TYPE consent_status AS ENUM (
+    'PENDING',
+    'GRANTED',
+    'REVOKED',
+    'EXPIRED'
+);
+
+CREATE TYPE eligibility_status AS ENUM (
+    'PENDING',
+    'PASSED',
+    'FAILED',
+    'REQUIRES_REVIEW'
+);
+
+-- ==========================================
+-- TABLES
+-- ==========================================
+
+-- 1. HOSPITALS
 CREATE TABLE hospitals (
-    hospital_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    hospital_name TEXT NOT NULL,
-    hfr_id TEXT,
-    rohini_code TEXT,
-    empanelment_type TEXT,
-    district TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    hospital_id VARCHAR PRIMARY KEY,
+    hospital_name VARCHAR NOT NULL,
+    hfr_id VARCHAR,
+    rohini_code VARCHAR,
+    empanelment_type VARCHAR,
+    district VARCHAR
 );
 
-CREATE TABLE departments (
-    department_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    hospital_id UUID NOT NULL REFERENCES hospitals(hospital_id),
-    department_name TEXT NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- Users (Staff) Table with Supabase Auth ID matching
-CREATE TABLE users (
-    user_id UUID PRIMARY KEY, -- Matches Supabase auth.users.id
-    hospital_id UUID REFERENCES hospitals(hospital_id),
-    employee_id TEXT UNIQUE,
-    department_id UUID REFERENCES departments(department_id),
-    name TEXT NOT NULL,
-    email TEXT UNIQUE NOT NULL,
-    role TEXT NOT NULL,
-    status TEXT DEFAULT 'ACTIVE',
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
+-- 2. DOCTORS
 CREATE TABLE doctors (
-    doctor_id UUID PRIMARY KEY REFERENCES users(user_id),
-    hospital_id UUID REFERENCES hospitals(hospital_id),
-    specialty TEXT,
-    hpr_id TEXT,
-    nmc_reg_number TEXT,
+    doctor_id VARCHAR PRIMARY KEY,
+    doctor_name VARCHAR NOT NULL,
+    specialty VARCHAR,
+    hpr_id VARCHAR,
+    nmc_reg_number VARCHAR,
+    phone_number VARCHAR,
+    address TEXT
+);
+
+-- 3. USERS
+CREATE TABLE users (
+    id VARCHAR PRIMARY KEY,
+    auth_user_id UUID UNIQUE, -- Mapped to auth.users.id manually
+    hospital_id VARCHAR,
+    doctor_id VARCHAR,
+    full_name VARCHAR NOT NULL,
+    email VARCHAR UNIQUE NOT NULL,
+    role user_role NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- 4. STAGING PATIENTS (Raw import target for CSV compatibility)
+CREATE TABLE staging_patients (
+    patient_id VARCHAR PRIMARY KEY,
+    full_name VARCHAR,
+    age INTEGER,
+    gender VARCHAR,
+    contact_number VARCHAR,
+    aadhaar_number VARCHAR,
+    ration_card_type VARCHAR,
+    state_domicile VARCHAR,
+    district VARCHAR,
+    address TEXT
+);
+
+-- 5. PATIENTS (Application canonical table)
 CREATE TABLE patients (
-    patient_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    full_name TEXT NOT NULL,
+    patient_id VARCHAR PRIMARY KEY,
+    full_name VARCHAR NOT NULL,
+    age INTEGER,
     date_of_birth DATE,
-    gender TEXT,
-    contact_number TEXT,
-    abha_id TEXT UNIQUE,
-    ration_card_type TEXT,
-    state_domicile TEXT,
-    district TEXT,
+    gender VARCHAR,
+    contact_number VARCHAR,
+    abha_id VARCHAR, -- Replaces aadhaar_number for privacy
+    ration_card_type VARCHAR,
+    state_domicile VARCHAR,
+    district VARCHAR,
     address TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE TABLE appointments (
-    appointment_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    patient_id UUID NOT NULL REFERENCES patients(patient_id),
-    doctor_id UUID REFERENCES doctors(doctor_id),
-    hospital_id UUID NOT NULL REFERENCES hospitals(hospital_id),
-    appointment_date DATE NOT NULL,
-    appointment_time TIME NOT NULL,
-    reason TEXT,
-    status TEXT DEFAULT 'SCHEDULED',
-    created_by UUID REFERENCES users(user_id),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-CREATE TABLE encounters (
-    encounter_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    patient_id UUID NOT NULL REFERENCES patients(patient_id),
-    hospital_id UUID NOT NULL REFERENCES hospitals(hospital_id),
-    doctor_id UUID REFERENCES doctors(doctor_id),
-    admission_date TIMESTAMP WITH TIME ZONE NOT NULL,
-    discharge_date TIMESTAMP WITH TIME ZONE,
-    admission_type TEXT,
-    diagnosis TEXT,
-    procedure_name TEXT,
-    procedure_code TEXT,
-    status TEXT DEFAULT 'ACTIVE',
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-CREATE TABLE vitals (
-    vital_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    patient_id UUID NOT NULL REFERENCES patients(patient_id),
-    encounter_id UUID REFERENCES encounters(encounter_id),
-    recorded_by UUID REFERENCES users(user_id),
-    temperature NUMERIC,
-    heart_rate INTEGER,
-    systolic_bp INTEGER,
-    diastolic_bp INTEGER,
-    spo2 INTEGER,
-    respiratory_rate INTEGER,
-    recorded_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-CREATE TABLE clinical_notes (
-    note_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    encounter_id UUID NOT NULL REFERENCES encounters(encounter_id),
-    provisional_diagnosis TEXT,
-    doctor_note_raw TEXT,
-    created_by UUID REFERENCES doctors(doctor_id),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-CREATE TABLE nursing_notes (
-    nursing_note_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    patient_id UUID NOT NULL REFERENCES patients(patient_id),
-    encounter_id UUID NOT NULL REFERENCES encounters(encounter_id),
-    nurse_id UUID REFERENCES users(user_id),
-    note_text TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-CREATE TABLE diagnostic_reports (
-    report_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    encounter_id UUID NOT NULL REFERENCES encounters(encounter_id),
-    report_type TEXT,
-    file_status TEXT,
-    file_url TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-CREATE TABLE documents (
-    document_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    patient_id UUID NOT NULL REFERENCES patients(patient_id),
-    encounter_id UUID REFERENCES encounters(encounter_id),
-    document_type TEXT NOT NULL,
-    file_status TEXT,
-    file_url TEXT,
-    uploaded_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
+-- 6. MJPJAY PACKAGES
 CREATE TABLE mjpjay_packages (
-    package_code TEXT PRIMARY KEY,
-    specialty TEXT,
-    package_name TEXT NOT NULL,
+    package_code VARCHAR PRIMARY KEY,
+    specialty VARCHAR,
+    package_name VARCHAR NOT NULL,
     government_rate_inr NUMERIC NOT NULL,
-    mandatory_documents JSONB,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    mandatory_documents JSONB
 );
 
-CREATE TABLE claims (
-    claim_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    encounter_id UUID NOT NULL REFERENCES encounters(encounter_id),
-    patient_id UUID NOT NULL REFERENCES patients(patient_id),
-    hospital_id UUID NOT NULL REFERENCES hospitals(hospital_id),
-    package_code TEXT REFERENCES mjpjay_packages(package_code),
-    scheme TEXT,
-    claimed_amount NUMERIC,
-    approved_amount NUMERIC,
-    preauth_status TEXT DEFAULT 'DRAFT',
-    submission_timestamp TIMESTAMP WITH TIME ZONE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+-- 7. ENCOUNTERS
+CREATE TABLE encounters (
+    encounter_id VARCHAR PRIMARY KEY,
+    patient_id VARCHAR NOT NULL,
+    hospital_id VARCHAR, -- Added for HMS compatibility
+    admission_date DATE,
+    attending_doctor VARCHAR, -- Retained for CSV string import
+    doctor_id VARCHAR, -- Canonical relationship, populated later
+    admission_type admission_type,
+    status encounter_status
 );
 
-CREATE TABLE claim_events (
-    event_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    claim_id UUID NOT NULL REFERENCES claims(claim_id),
-    event_type TEXT NOT NULL,
-    description TEXT,
-    created_by UUID REFERENCES users(user_id),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+-- 8. CLINICAL NOTES
+CREATE TABLE clinical_notes (
+    note_id VARCHAR PRIMARY KEY,
+    encounter_id VARCHAR NOT NULL,
+    provisional_diagnosis TEXT,
+    doctor_note_raw TEXT
 );
 
+-- 9. DIAGNOSTIC REPORTS
+CREATE TABLE diagnostic_reports (
+    report_id VARCHAR PRIMARY KEY,
+    encounter_id VARCHAR NOT NULL,
+    report_type VARCHAR,
+    file_status file_status,
+    file_url TEXT
+);
+
+-- 10. DOCUMENTS
+CREATE TABLE documents (
+    document_id VARCHAR PRIMARY KEY,
+    patient_id VARCHAR NOT NULL,
+    encounter_id VARCHAR,
+    document_type VARCHAR NOT NULL,
+    file_url TEXT NOT NULL,
+    status document_status DEFAULT 'PENDING_VERIFICATION',
+    uploaded_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 11. CONSENTS
 CREATE TABLE consents (
-    consent_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    patient_id UUID NOT NULL REFERENCES patients(patient_id),
-    purpose TEXT NOT NULL,
-    status TEXT DEFAULT 'PENDING',
+    consent_id VARCHAR PRIMARY KEY,
+    patient_id VARCHAR NOT NULL,
+    encounter_id VARCHAR,
+    purpose VARCHAR NOT NULL,
+    status consent_status DEFAULT 'PENDING',
     granted_at TIMESTAMP WITH TIME ZONE,
-    expires_at TIMESTAMP WITH TIME ZONE,
+    revoked_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- 12. ELIGIBILITY CHECKS
 CREATE TABLE eligibility_checks (
-    eligibility_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    patient_id UUID NOT NULL REFERENCES patients(patient_id),
-    encounter_id UUID REFERENCES encounters(encounter_id),
-    scheme TEXT NOT NULL,
-    checked_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    eligible BOOLEAN NOT NULL,
-    status TEXT,
-    reason TEXT
+    eligibility_check_id VARCHAR PRIMARY KEY,
+    patient_id VARCHAR NOT NULL,
+    encounter_id VARCHAR,
+    scheme VARCHAR NOT NULL,
+    status eligibility_status DEFAULT 'PENDING',
+    checked_at TIMESTAMP WITH TIME ZONE,
+    response_reference VARCHAR,
+    notes TEXT
 );
 
-CREATE TABLE system_audit_logs (
-    audit_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID REFERENCES users(user_id),
-    hospital_id UUID REFERENCES hospitals(hospital_id),
-    action TEXT NOT NULL,
-    resource_type TEXT,
-    resource_id UUID,
-    ip_address TEXT,
-    timestamp TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    metadata JSONB
+-- 13. CLAIMS
+CREATE TABLE claims (
+    claim_id VARCHAR PRIMARY KEY,
+    encounter_id VARCHAR NOT NULL,
+    patient_id VARCHAR, -- Added for HMS compatibility
+    hospital_id VARCHAR, -- Added for HMS compatibility
+    package_code VARCHAR NOT NULL,
+    preauth_status claim_status DEFAULT 'Draft',
+    claimed_amount NUMERIC NOT NULL,
+    approved_amount NUMERIC,
+    submission_timestamp TIMESTAMP WITH TIME ZONE
+);
+
+-- 14. CLAIM EVENTS
+CREATE TABLE claim_events (
+    event_id VARCHAR PRIMARY KEY,
+    claim_id VARCHAR NOT NULL,
+    event_type claim_status NOT NULL,
+    description TEXT,
+    timestamp TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 15. AUDIT LOGS (AI/FHIR Specific as per CSV)
+CREATE TABLE audit_logs (
+    log_id VARCHAR PRIMARY KEY,
+    encounter_id VARCHAR NOT NULL,
+    extracted_raw_text TEXT,
+    mapped_package_code VARCHAR,
+    ai_confidence_score NUMERIC,
+    preflight_check_status VARCHAR,
+    fhir_bundle_status VARCHAR,
+    timestamp TIMESTAMP WITH TIME ZONE
 );

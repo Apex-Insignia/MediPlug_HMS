@@ -1,218 +1,134 @@
-# HMS MVP Data Dictionary
-
-This document details the database schema and relationships for the AI Claim Bridge HMS MVP.
-
-## Roles
-- `ADMIN`
-- `DOCTOR`
-- `NURSE`
-- `RECEPTIONIST`
-- `CLAIM_OFFICER`
-- `AUDITOR`
-
----
+# Data Dictionary
 
 ## 1. hospitals
-The root entity representing the healthcare facility.
-- `hospital_id` (UUID, PK)
-- `hospital_name` (Text)
-- `hfr_id` (Text)
-- `rohini_code` (Text)
-- `empanelment_type` (Text)
-- `district` (Text)
-- `created_at` (Timestamp)
-- `updated_at` (Timestamp)
+*Source: `hospital_info.csv` (Developer Provided)*
+- `hospital_id` (VARCHAR) [PK]: Unique identifier.
+- `hospital_name` (VARCHAR): Name of the hospital.
+- `hfr_id` (VARCHAR): Health Facility Registry ID.
+- `rohini_code` (VARCHAR): ROHINI empanelment code.
+- `empanelment_type` (VARCHAR): Type of empanelment.
+- `district` (VARCHAR): Location.
 
-## 2. departments
-Logical groupings within a hospital.
-- `department_id` (UUID, PK)
-- `hospital_id` (UUID, FK -> hospitals)
-- `department_name` (Text)
-- `created_at` (Timestamp)
-- `updated_at` (Timestamp)
+## 2. doctors
+*Source: `doctors.csv` (Developer Provided)*
+- `doctor_id` (VARCHAR) [PK]: Unique identifier.
+- `doctor_name` (VARCHAR): Full name of the doctor.
+- `specialty` (VARCHAR): Clinical specialty.
+- `hpr_id` (VARCHAR): Health Professional Registry ID.
+- `nmc_reg_number` (VARCHAR): NMC Registration Number.
+- `phone_number` (VARCHAR): Contact number.
+- `address` (TEXT): Residential/Clinic address.
 
 ## 3. users
-Hospital staff with Supabase Auth integration and RBAC.
-- `user_id` (UUID, PK, matches Supabase auth.users.id)
-- `hospital_id` (UUID, FK -> hospitals)
-- `employee_id` (Text, Unique)
-- `department_id` (UUID, FK -> departments)
-- `name` (Text)
-- `email` (Text, Unique)
-- `role` (Text, ENUM of roles)
-- `status` (Text, e.g., ACTIVE, INACTIVE)
-- `created_at` (Timestamp)
-- `updated_at` (Timestamp)
+*Source: `users.csv` (Newly Generated)*
+- `id` (VARCHAR) [PK]: Internal user ID.
+- `auth_user_id` (UUID): Maps to `auth.users.id` in Supabase Auth.
+- `hospital_id` (VARCHAR) [FK -> hospitals]: Associated hospital.
+- `doctor_id` (VARCHAR) [FK -> doctors]: Nullable, associates user with a doctor profile.
+- `full_name` (VARCHAR): Display name.
+- `email` (VARCHAR) [UNIQUE]: Login email.
+- `role` (ENUM: `user_role`): Access level (ADMIN, DOCTOR, NURSE, RECEPTIONIST, CLAIM_OFFICER, AUDITOR).
+- `is_active` (BOOLEAN): Account status.
 
-## 4. doctors
-Specific medical staff details.
-- `doctor_id` (UUID, PK, FK -> users)
-- `hospital_id` (UUID, FK -> hospitals)
-- `specialty` (Text)
-- `hpr_id` (Text)
-- `nmc_reg_number` (Text)
-- `created_at` (Timestamp)
-- `updated_at` (Timestamp)
+## 4. patients
+*Source: `patients (1).csv` via `staging_patients` (Developer Provided)*
+- `patient_id` (VARCHAR) [PK]: Unique identifier.
+- `full_name` (VARCHAR): Full name.
+- `age` (INTEGER): Age in years.
+- `date_of_birth` (DATE): Nullable optional DOB.
+- `gender` (VARCHAR): 'M' or 'F'.
+- `contact_number` (VARCHAR): Contact number.
+- `abha_id` (VARCHAR): Synthetic/Demo ABHA ID (Aadhaar omitted for privacy).
+- `ration_card_type` (VARCHAR): e.g., 'Orange'.
+- `state_domicile` (VARCHAR): State.
+- `district` (VARCHAR): District.
+- `address` (TEXT): Full address.
 
-## 5. patients
-Core patient demographic information.
-- `patient_id` (UUID, PK)
-- `full_name` (Text)
-- `date_of_birth` (Date)
-- `gender` (Text)
-- `contact_number` (Text)
-- `abha_id` (Text, Unique)
-- `ration_card_type` (Text)
-- `state_domicile` (Text)
-- `district` (Text)
-- `address` (Text)
-- `created_at` (Timestamp)
-- `updated_at` (Timestamp)
+## 5. mjpjay_packages
+*Source: `mjpjay_master_packages.csv` (Developer Provided)*
+- `package_code` (VARCHAR) [PK]: Package code (e.g., S1A5.1).
+- `specialty` (VARCHAR): Package specialty.
+- `package_name` (VARCHAR): Name of the package.
+- `government_rate_inr` (NUMERIC): Package cost.
+- `mandatory_documents` (JSONB): Array of required document types.
 
-## 6. appointments
-Scheduled patient visits.
-- `appointment_id` (UUID, PK)
-- `patient_id` (UUID, FK -> patients)
-- `doctor_id` (UUID, FK -> doctors)
-- `hospital_id` (UUID, FK -> hospitals)
-- `appointment_date` (Date)
-- `appointment_time` (Time)
-- `reason` (Text)
-- `status` (Text, SCHEDULED, CHECKED_IN, COMPLETED, CANCELLED)
-- `created_by` (UUID, FK -> users)
-- `created_at` (Timestamp)
-- `updated_at` (Timestamp)
+## 6. encounters
+*Source: `encounters.csv` (Developer Provided)*
+- `encounter_id` (VARCHAR) [PK]: Unique identifier.
+- `patient_id` (VARCHAR) [FK -> patients]: Patient ID.
+- `hospital_id` (VARCHAR) [FK -> hospitals]: Associated hospital.
+- `admission_date` (DATE): Date of admission.
+- `attending_doctor` (VARCHAR): Raw name from CSV.
+- `doctor_id` (VARCHAR) [FK -> doctors]: Canonical doctor relationship.
+- `admission_type` (ENUM: `admission_type`): 'Emergency', 'Elective'.
+- `status` (ENUM: `encounter_status`): 'Pre-Auth Pending', 'Admitted', 'Discharged'.
 
-## 7. encounters
-Actual medical visits (admissions or OPD).
-- `encounter_id` (UUID, PK)
-- `patient_id` (UUID, FK -> patients)
-- `hospital_id` (UUID, FK -> hospitals)
-- `doctor_id` (UUID, FK -> doctors)
-- `admission_date` (Timestamp)
-- `discharge_date` (Timestamp, Nullable)
-- `admission_type` (Text)
-- `diagnosis` (Text)
-- `procedure_name` (Text)
-- `procedure_code` (Text)
-- `status` (Text)
-- `created_at` (Timestamp)
-- `updated_at` (Timestamp)
+## 7. clinical_notes
+*Source: `clinical_notes.csv` (Developer Provided)*
+- `note_id` (VARCHAR) [PK]: Unique identifier.
+- `encounter_id` (VARCHAR) [FK -> encounters]: Encounter ID.
+- `provisional_diagnosis` (TEXT): Diagnosis text.
+- `doctor_note_raw` (TEXT): Raw clinical note.
 
-## 8. vitals
-Patient measurements.
-- `vital_id` (UUID, PK)
-- `patient_id` (UUID, FK -> patients)
-- `encounter_id` (UUID, FK -> encounters)
-- `recorded_by` (UUID, FK -> users)
-- `temperature` (Numeric)
-- `heart_rate` (Integer)
-- `systolic_bp` (Integer)
-- `diastolic_bp` (Integer)
-- `spo2` (Integer)
-- `respiratory_rate` (Integer)
-- `recorded_at` (Timestamp)
+## 8. diagnostic_reports
+*Source: `diagnostic_reports.csv` (Developer Provided)*
+- `report_id` (VARCHAR) [PK]: Unique identifier.
+- `encounter_id` (VARCHAR) [FK -> encounters]: Encounter ID.
+- `report_type` (VARCHAR): Type of report (e.g., USG_Abdomen).
+- `file_status` (ENUM: `file_status`): 'Uploaded', 'Pending'.
+- `file_url` (TEXT): URL to the file.
 
-## 9. clinical_notes
-Notes made by doctors.
-- `note_id` (UUID, PK)
-- `encounter_id` (UUID, FK -> encounters)
-- `provisional_diagnosis` (Text)
-- `doctor_note_raw` (Text)
-- `created_by` (UUID, FK -> doctors)
-- `created_at` (Timestamp)
-- `updated_at` (Timestamp)
+## 9. documents
+*Source: `documents.csv` (Newly Generated)*
+- `document_id` (VARCHAR) [PK]: Unique identifier.
+- `patient_id` (VARCHAR) [FK -> patients]: Patient ID.
+- `encounter_id` (VARCHAR) [FK -> encounters]: Encounter ID.
+- `document_type` (VARCHAR): Type of document (e.g., IDENTITY_DOCUMENT).
+- `file_url` (TEXT): File location.
+- `status` (ENUM: `document_status`): 'PENDING_VERIFICATION', 'VERIFIED', 'REJECTED'.
 
-## 10. nursing_notes
-Notes made by nurses.
-- `nursing_note_id` (UUID, PK)
-- `patient_id` (UUID, FK -> patients)
-- `encounter_id` (UUID, FK -> encounters)
-- `nurse_id` (UUID, FK -> users)
-- `note_text` (Text)
-- `created_at` (Timestamp)
-- `updated_at` (Timestamp)
+## 10. consents
+*Source: `consents.csv` (Newly Generated)*
+- `consent_id` (VARCHAR) [PK]: Unique identifier.
+- `patient_id` (VARCHAR) [FK -> patients]: Patient ID.
+- `encounter_id` (VARCHAR) [FK -> encounters]: Nullable Encounter ID.
+- `purpose` (VARCHAR): Purpose of consent.
+- `status` (ENUM: `consent_status`): 'PENDING', 'GRANTED', 'REVOKED', 'EXPIRED'.
 
-## 11. diagnostic_reports
-- `report_id` (UUID, PK)
-- `encounter_id` (UUID, FK -> encounters)
-- `report_type` (Text)
-- `file_status` (Text)
-- `file_url` (Text)
-- `created_at` (Timestamp)
-- `updated_at` (Timestamp)
+## 11. eligibility_checks
+*Source: `eligibility_checks.csv` (Newly Generated)*
+- `eligibility_check_id` (VARCHAR) [PK]: Unique identifier.
+- `patient_id` (VARCHAR) [FK -> patients]: Patient ID.
+- `encounter_id` (VARCHAR) [FK -> encounters]: Encounter ID.
+- `scheme` (VARCHAR): Scheme checked (e.g., MJPJAY).
+- `status` (ENUM: `eligibility_status`): 'PENDING', 'PASSED', 'FAILED', 'REQUIRES_REVIEW'.
 
-## 12. documents
-General uploaded documents.
-- `document_id` (UUID, PK)
-- `patient_id` (UUID, FK -> patients)
-- `encounter_id` (UUID, FK -> encounters)
-- `document_type` (Text)
-- `file_status` (Text)
-- `file_url` (Text)
-- `uploaded_at` (Timestamp)
-- `updated_at` (Timestamp)
+## 12. claims
+*Source: `claims_preauth.csv` (Developer Provided)*
+- `claim_id` (VARCHAR) [PK]: Unique identifier.
+- `encounter_id` (VARCHAR) [FK -> encounters]: Encounter ID.
+- `patient_id` (VARCHAR) [FK -> patients]: Patient ID.
+- `hospital_id` (VARCHAR) [FK -> hospitals]: Hospital ID.
+- `package_code` (VARCHAR) [FK -> mjpjay_packages]: Claimed package.
+- `preauth_status` (ENUM: `claim_status`): 'Submitted_SHA', 'Query_Raised', 'PreFlight_Blocked', 'Draft', 'Approved'.
+- `claimed_amount` (NUMERIC): Amount claimed.
+- `approved_amount` (NUMERIC): Amount approved.
+- `submission_timestamp` (TIMESTAMP): Submission time.
 
-## 13. mjpjay_packages
-Master list of claim packages.
-- `package_code` (Text, PK)
-- `specialty` (Text)
-- `package_name` (Text)
-- `government_rate_inr` (Numeric)
-- `mandatory_documents` (JSONB)
-- `created_at` (Timestamp)
-- `updated_at` (Timestamp)
+## 13. claim_events
+*Source: `claim_events.csv` (Newly Generated)*
+- `event_id` (VARCHAR) [PK]: Unique identifier.
+- `claim_id` (VARCHAR) [FK -> claims]: Associated claim.
+- `event_type` (ENUM: `claim_status`): State transition.
+- `description` (TEXT): Description of event.
 
-## 14. claims
-- `claim_id` (UUID, PK)
-- `encounter_id` (UUID, FK -> encounters)
-- `patient_id` (UUID, FK -> patients)
-- `hospital_id` (UUID, FK -> hospitals)
-- `package_code` (Text, FK -> mjpjay_packages)
-- `scheme` (Text)
-- `claimed_amount` (Numeric)
-- `approved_amount` (Numeric)
-- `preauth_status` (Text)
-- `submission_timestamp` (Timestamp, Nullable)
-- `created_at` (Timestamp)
-- `updated_at` (Timestamp)
-
-## 15. claim_events
-Timeline events for a claim.
-- `event_id` (UUID, PK)
-- `claim_id` (UUID, FK -> claims)
-- `event_type` (Text)
-- `description` (Text)
-- `created_by` (UUID, FK -> users)
-- `created_at` (Timestamp)
-
-## 16. consents
-- `consent_id` (UUID, PK)
-- `patient_id` (UUID, FK -> patients)
-- `purpose` (Text)
-- `status` (Text, PENDING, GRANTED, REVOKED, EXPIRED)
-- `granted_at` (Timestamp, Nullable)
-- `expires_at` (Timestamp, Nullable)
-- `created_at` (Timestamp)
-- `updated_at` (Timestamp)
-
-## 17. eligibility_checks
-- `eligibility_id` (UUID, PK)
-- `patient_id` (UUID, FK -> patients)
-- `encounter_id` (UUID, FK -> encounters)
-- `scheme` (Text)
-- `checked_at` (Timestamp)
-- `eligible` (Boolean)
-- `status` (Text)
-- `reason` (Text)
-
-## 18. system_audit_logs
-- `audit_id` (UUID, PK)
-- `user_id` (UUID, FK -> users)
-- `hospital_id` (UUID, FK -> hospitals)
-- `action` (Text)
-- `resource_type` (Text)
-- `resource_id` (UUID)
-- `ip_address` (Text)
-- `timestamp` (Timestamp)
-- `metadata` (JSONB)
+## 14. audit_logs
+*Source: `audit_logs.csv` (Developer Provided)*
+- `log_id` (VARCHAR) [PK]: Unique identifier.
+- `encounter_id` (VARCHAR) [FK -> encounters]: Encounter ID.
+- `extracted_raw_text` (TEXT): Raw AI extracted text.
+- `mapped_package_code` (VARCHAR): AI matched package.
+- `ai_confidence_score` (NUMERIC): Model confidence.
+- `preflight_check_status` (VARCHAR): Preflight result.
+- `fhir_bundle_status` (VARCHAR): FHIR generation result.
+- `timestamp` (TIMESTAMP): Log time.
