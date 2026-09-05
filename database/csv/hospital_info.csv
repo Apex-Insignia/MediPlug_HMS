@@ -1,0 +1,11 @@
+hospital_id,hospital_name,hfr_id,rohini_code,empanelment_type,district
+HOSP-PUNE-012,Sahyadri Super Speciality Hospital,HFR-MH-00982,8900012345678,Private Empanelled,Pune
+HOSP-MUM-045,KEM Hospital,HFR-MH-00124,8900012345111,Public,Mumbai
+HOSP-NAG-003,Wockhardt Hospital,HFR-MH-00567,8900012345222,Private Empanelled,Nagpur
+HOSP-NSK-021,Apollo Hospitals,HFR-MH-00789,8900012345333,Private Empanelled,Nashik
+HOSP-AUR-011,Government Medical College and Hospital,HFR-MH-00345,8900012345444,Public,Aurangabad
+HOSP-PUNE-005,Sassoon General Hospital,HFR-MH-00101,8900012345555,Public,Pune
+HOSP-MUM-089,Lilavati Hospital,HFR-MH-00999,8900012345666,Private Empanelled,Mumbai
+HOSP-THA-014,Jupiter Hospital,HFR-MH-00888,8900012345777,Private Empanelled,Thane
+HOSP-NAG-007,AIIMS Nagpur,HFR-MH-00111,8900012345888,Public,Nagpur
+HOSP-MUM-002,Sir J.J. Group of Hospitals,HFR-MH-00102,8900012345999,Public,Mumbai

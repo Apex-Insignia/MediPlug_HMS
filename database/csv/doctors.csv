@@ -1,0 +1,11 @@
+doctor_id,doctor_name,specialty,hpr_id,nmc_reg_number,phone_number,address
+DOC-401,Dr. Shinde,General Surgery,HPR-MH-98101,MMC-2010-04-1101,+91-9876543211,"14 Fergusson College Rd, Shivaji Nagar, Pune, Maharashtra 411005"
+DOC-402,Dr. Patil,General Surgery,HPR-MH-98102,MMC-2012-08-1102,+91-9876543212,"22 Koregaon Park, Pune, Maharashtra 411001"
+DOC-403,Dr. Deshmukh,Obstetrics & Gynecology,HPR-MH-98103,MMC-2009-02-1103,+91-9876543213,"85 SV Road, Bandra West, Mumbai, Maharashtra 400050"
+DOC-404,Dr. Kulkarni,Ophthalmology,HPR-MH-98104,MMC-2015-11-1104,+91-9876543214,"12 Ramdaspeth, Nagpur, Maharashtra 440010"
+DOC-405,Dr. Joshi,Orthopedics,HPR-MH-98105,MMC-2011-06-1105,+91-9876543215,"90 MG Road, Camp, Pune, Maharashtra 411001"
+DOC-406,Dr. Pawar,Cardiology,HPR-MH-98106,MMC-2008-01-1106,+91-9876543216,"44 Linking Road, Andheri West, Mumbai, Maharashtra 400053"
+DOC-407,Dr. Chavan,ENT,HPR-MH-98107,MMC-2014-09-1107,+91-9876543217,"33 College Road, Nashik, Maharashtra 422005"
+DOC-408,Dr. Tambe,Urology,HPR-MH-98108,MMC-2016-03-1108,+91-9876543218,"18 Jalna Road, Aurangabad, Maharashtra 431001"
+DOC-409,Dr. Mane,Gastroenterology,HPR-MH-98109,MMC-2013-05-1109,+91-9876543219,"56 Senapati Bapat Marg, Dadar, Mumbai, Maharashtra 400028"
+DOC-410,Dr. Jadhav,Oncology Surgery,HPR-MH-98110,MMC-2007-12-1110,+91-9876543220,"11 Baner Road, Baner, Pune, Maharashtra 411045 "

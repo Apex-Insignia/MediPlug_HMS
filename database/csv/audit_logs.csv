@@ -1,0 +1,11 @@
+log_id,encounter_id,extracted_raw_text,mapped_package_code,ai_confidence_score,preflight_check_status,fhir_bundle_status,timestamp
+LOG-9001,ENC-2026-1001,pt c/o severe RLQ pain x 2 days... adv lap appy.,S1A5.1,0.96,PASSED,SENT_TO_GATEWAY,2026-08-25T10:14:05Z
+LOG-9002,ENC-2026-1002,plan for lap chole.,S1A11.1,0.92,BLOCKED_MISSING_DOCS,ABORTED,2026-08-25T11:44:10Z
+LOG-9003,ENC-2026-1003,mature senile cataract. plan for phaco with IOL under LA.,S4D1.1,0.98,PASSED,SENT_TO_GATEWAY,2026-08-26T09:29:15Z
+LOG-9004,ENC-2026-1004,Angio: LAD 85% block. adv PTCA stenting.,S6F2.1,0.94,BLOCKED_MISSING_DOCS,ABORTED,2026-08-26T14:19:22Z
+LOG-9005,ENC-2026-1005,indirect inguinal hernia. mesh hernioplasty planned.,S1A12.1,0.89,PASSED,SENT_TO_GATEWAY,2026-08-27T08:49:05Z
+LOG-9006,ENC-2026-1006,CT KUB shows 12mm stone in Lt renal pelvis. URSL/PCNL needed.,S2B1.2,0.85,PASSED,SENT_TO_GATEWAY,2026-08-27T10:04:18Z
+LOG-9007,ENC-2026-1007,adv bilat tonsillectomy.,S7G1.1,0.99,PASSED,SENT_TO_GATEWAY,2026-08-28T11:09:40Z
+LOG-9008,ENC-2026-1008,USG shows prostate 60cc with large PVR. planned for TURP.,S2B2.1,0.95,BLOCKED_MISSING_DOCS,ABORTED,2026-08-28T13:39:12Z
+LOG-9009,ENC-2026-1009,6cm intramural fibroid. TLH scheduled.,S3C1.1,0.91,PASSED,SENT_TO_GATEWAY,2026-08-28T15:24:55Z
+LOG-9010,ENC-2026-1010,severe osteoarthritis b/l knees... adv TKR.,S5E1.1,0.97,PASSED,SENT_TO_GATEWAY,2026-08-29T09:14:30Z

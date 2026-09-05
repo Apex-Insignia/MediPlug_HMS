@@ -1,0 +1,51 @@
+encounter_id,patient_id,admission_date,attending_doctor,admission_type,status
+ENC-2026-1001,PT-10001,2026-08-25,Dr. Shinde,Emergency,Discharged
+ENC-2026-1002,PT-10002,2026-08-25,Dr. Patil,Elective,Admitted
+ENC-2026-1003,PT-10003,2026-08-26,Dr. Deshmukh,Elective,Pre-Auth Pending
+ENC-2026-1004,PT-10004,2026-08-26,Dr. Kulkarni,Elective,Admitted
+ENC-2026-1005,PT-10005,2026-08-27,Dr. Joshi,Emergency,Discharged
+ENC-2026-1006,PT-10006,2026-08-27,Dr. Shinde,Emergency,Admitted
+ENC-2026-1007,PT-10007,2026-08-28,Dr. Pawar,Elective,Pre-Auth Pending
+ENC-2026-1008,PT-10008,2026-08-28,Dr. Chavan,Elective,Discharged
+ENC-2026-1009,PT-10009,2026-08-28,Dr. Tambe,Elective,Admitted
+ENC-2026-1010,PT-10010,2026-08-29,Dr. Patil,Emergency,Pre-Auth Pending
+ENC-2026-1011,PT-10011,2026-08-29,Dr. Shinde,Emergency,Admitted
+ENC-2026-1012,PT-10012,2026-08-29,Dr. Deshmukh,Elective,Discharged
+ENC-2026-1013,PT-10013,2026-08-30,Dr. Kulkarni,Elective,Pre-Auth Pending
+ENC-2026-1014,PT-10014,2026-08-30,Dr. Joshi,Emergency,Admitted
+ENC-2026-1015,PT-10015,2026-08-30,Dr. Pawar,Elective,Discharged
+ENC-2026-1016,PT-10016,2026-08-31,Dr. Tambe,Emergency,Admitted
+ENC-2026-1017,PT-10017,2026-08-31,Dr. Chavan,Elective,Pre-Auth Pending
+ENC-2026-1018,PT-10018,2026-08-31,Dr. Patil,Elective,Admitted
+ENC-2026-1019,PT-10019,2026-08-31,Dr. Shinde,Elective,Discharged
+ENC-2026-1020,PT-10020,2026-09-01,Dr. Deshmukh,Emergency,Admitted
+ENC-2026-1021,PT-10021,2026-09-01,Dr. Kulkarni,Emergency,Pre-Auth Pending
+ENC-2026-1022,PT-10022,2026-09-01,Dr. Joshi,Elective,Admitted
+ENC-2026-1023,PT-10023,2026-09-01,Dr. Pawar,Elective,Discharged
+ENC-2026-1024,PT-10024,2026-09-02,Dr. Chavan,Emergency,Admitted
+ENC-2026-1025,PT-10025,2026-09-02,Dr. Tambe,Elective,Pre-Auth Pending
+ENC-2026-1026,PT-10026,2026-09-02,Dr. Patil,Elective,Admitted
+ENC-2026-1027,PT-10027,2026-09-02,Dr. Shinde,Elective,Discharged
+ENC-2026-1028,PT-10028,2026-09-03,Dr. Deshmukh,Elective,Pre-Auth Pending
+ENC-2026-1029,PT-10029,2026-09-03,Dr. Joshi,Emergency,Admitted
+ENC-2026-1030,PT-10030,2026-09-03,Dr. Kulkarni,Elective,Discharged
+ENC-2026-1031,PT-10031,2026-09-03,Dr. Pawar,Emergency,Admitted
+ENC-2026-1032,PT-10032,2026-09-03,Dr. Chavan,Elective,Pre-Auth Pending
+ENC-2026-1033,PT-10033,2026-09-04,Dr. Tambe,Elective,Admitted
+ENC-2026-1034,PT-10034,2026-09-04,Dr. Patil,Elective,Discharged
+ENC-2026-1035,PT-10035,2026-09-04,Dr. Shinde,Elective,Pre-Auth Pending
+ENC-2026-1036,PT-10036,2026-09-04,Dr. Deshmukh,Elective,Admitted
+ENC-2026-1037,PT-10037,2026-09-04,Dr. Joshi,Elective,Discharged
+ENC-2026-1038,PT-10038,2026-09-04,Dr. Kulkarni,Elective,Pre-Auth Pending
+ENC-2026-1039,PT-10039,2026-09-04,Dr. Pawar,Elective,Admitted
+ENC-2026-1040,PT-10040,2026-09-05,Dr. Chavan,Emergency,Discharged
+ENC-2026-1041,PT-10041,2026-09-05,Dr. Shinde,Emergency,Pre-Auth Pending
+ENC-2026-1042,PT-10042,2026-09-05,Dr. Patil,Elective,Admitted
+ENC-2026-1043,PT-10043,2026-09-05,Dr. Deshmukh,Elective,Discharged
+ENC-2026-1044,PT-10044,2026-09-05,Dr. Kulkarni,Elective,Pre-Auth Pending
+ENC-2026-1045,PT-10045,2026-09-06,Dr. Joshi,Elective,Admitted
+ENC-2026-1046,PT-10046,2026-09-06,Dr. Pawar,Elective,Discharged
+ENC-2026-1047,PT-10047,2026-09-06,Dr. Tambe,Elective,Pre-Auth Pending
+ENC-2026-1048,PT-10048,2026-09-06,Dr. Chavan,Elective,Admitted
+ENC-2026-1049,PT-10049,2026-09-07,Dr. Shinde,Elective,Discharged
+ENC-2026-1050,PT-10050,2026-09-07,Dr. Patil,Emergency,Pre-Auth Pending

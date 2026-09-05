@@ -1,0 +1,51 @@
+note_id,encounter_id,provisional_diagnosis,doctor_note_raw
+N-5001,ENC-2026-1001,Acute Appendicitis,pt c/o severe RLQ pain x 2 days. fever positive. USG shows inflamed appendix. adv lap appy.
+N-5002,ENC-2026-1002,Symptomatic Cholelithiasis,45F with RUQ pain radiating to back. USG abd reveals multiple gallstones. GB wall thickened. plan for lap chole.
+N-5003,ENC-2026-1003,Senile Cataract Right Eye,decreased vision RE x 6 months. mature senile cataract. plan for phaco with IOL under LA.
+N-5004,ENC-2026-1004,Coronary Artery Disease (CAD),55yo M known diabetic. chest pain on exertion. Angio: LAD 85% block. adv PTCA stenting.
+N-5005,ENC-2026-1005,Right Inguinal Hernia,swelling in Rt groin reducible. cough impulse pos. indirect inguinal hernia. mesh hernioplasty planned.
+N-5006,ENC-2026-1006,Renal Calculus (Nephrolithiasis),severe flank pain hematuria. CT KUB shows 12mm stone in Lt renal pelvis. URSL/PCNL needed.
+N-5007,ENC-2026-1007,Chronic Tonsillitis,recurrent sore throat >6 episodes a yr. bilat enlarged tonsils. adv bilat tonsillectomy.
+N-5008,ENC-2026-1008,Benign Prostatic Hyperplasia (BPH),65M poor urine stream hesitancy. USG shows prostate 60cc with large PVR. planned for TURP.
+N-5009,ENC-2026-1009,Fibroid Uterus,heavy menstrual bleeding x 1 yr. bulky uterus on scan with 6cm intramural fibroid. TLH scheduled.
+N-5010,ENC-2026-1010,Severe Osteoarthritis Bilateral Knees,severe pain b/l knees unable to walk. Xray shows joint space obliterated. adv total knee replacement TKR.
+N-5011,ENC-2026-1011,Acute Appendicitis,pain periumbilical shifting to RIF. tlc 15000. acute appy on scan. prep for emergency appendectomy.
+N-5012,ENC-2026-1012,Choledocholithiasis,jaundice + pain. MRCP shows CBD stone 8mm. ERCP with stenting and stone clearance req.
+N-5013,ENC-2026-1013,Senile Cataract Left Eye,blurring vision LE. fundus normal. NS grade 3 cataract. adv phacoemulsification.
+N-5014,ENC-2026-1014,Fracture Neck of Femur,70F fall at home. Xray pelvis shows Lt NOF fracture. bipolar hemiarthroplasty planned.
+N-5015,ENC-2026-1015,Left Inguinal Hernia,left sided groin swelling dragging pain. direct hernia. plan for Lichtenstein mesh repair.
+N-5016,ENC-2026-1016,Ureteric Calculus,Lt side colicky pain. 8mm stone in distal ureter with hydronephrosis. URSL with DJ stenting.
+N-5017,ENC-2026-1017,Deviated Nasal Septum (DNS),nasal block headache. severe left sided DNS with spur. septoplasty adv.
+N-5018,ENC-2026-1018,Benign Prostatic Hyperplasia (BPH),urinary retention on catheter. grade III prostatomegaly. plan TURP.
+N-5019,ENC-2026-1019,Ovarian Cyst,persistent pelvic pain. 8cm complex cyst right ovary on TVS. lap cystectomy adv.
+N-5020,ENC-2026-1020,Breast Carcinoma,painless hard lump right breast. core biopsy infiltrating ductal ca. modified radical mastectomy MRM planned.
+N-5021,ENC-2026-1021,Acute Appendicitis,RIF tenderness + rebound. USG features c/w appendicitis. lap appy.
+N-5022,ENC-2026-1022,Symptomatic Cholelithiasis,dyspepsia and colicky pain post meals. solitary 15mm gallstone. plan lap cholecystectomy.
+N-5023,ENC-2026-1023,Diabetic Foot Ulcer,chronic non healing ulcer right great toe with slough. debridement and amputation if req.
+N-5024,ENC-2026-1024,Coronary Artery Disease (CAD),NSTEMI. Trop T pos. RCA 90% stenosis. for emergent PTCA.
+N-5025,ENC-2026-1025,Umbilical Hernia,swelling umbilicus non reducible. defect 3cm. plan mesh repair under SA.
+N-5026,ENC-2026-1026,Renal Calculus (Nephrolithiasis),b/l renal stones. right 15mm left 10mm. planned right PCNL first.
+N-5027,ENC-2026-1027,Vocal Cord Polyp,hoarseness of voice x 3 mo. microlaryngeal surgery MLS for polyp excision.
+N-5028,ENC-2026-1028,Stricture Urethra,poor flow straining. RGU shows bulbar stricture. OIU (optical internal urethrotomy) planned.
+N-5029,ENC-2026-1029,Ectopic Pregnancy,amenorrhea 6 wks severe acute pain abd. UPT pos. free fluid ++. emergency lap for ruptured ectopic.
+N-5030,ENC-2026-1030,Chronic Suppurative Otitis Media (CSOM),right ear discharge hearing loss. central perf. tympanoplasty planned.
+N-5031,ENC-2026-1031,Acute Appendicitis,fever vomit RIF pain. appendicitis on CT. to OR for appendectomy.
+N-5032,ENC-2026-1032,Symptomatic Cholelithiasis,gallstones with acute cholecystitis. IV abx started. plan lap chole after 48h.
+N-5033,ENC-2026-1033,Glaucoma (Primary Open Angle),raised IOP b/l. poorly controlled on drops. trabeculectomy right eye.
+N-5034,ENC-2026-1034,Rheumatic Heart Disease (RHD),severe mitral stenosis. dyspnea NYHA III. balloon mitral valvotomy BMV.
+N-5035,ENC-2026-1035,Incisional Hernia,post op swelling midline abd. defect 5x5cm. lap IPOM repair adv.
+N-5036,ENC-2026-1036,Bladder Calculus,hematuria pain terminal. 3cm vesical calculus. CLT (cystolithotripsy).
+N-5037,ENC-2026-1037,Nasal Polyposis,b/l nasal polyps. completely obstructing airway. FESS (functional endoscopic sinus surgery) planned.
+N-5038,ENC-2026-1038,Phimosis,inability to retract prepuce. recurrent balanoposthitis. circumcision adv.
+N-5039,ENC-2026-1039,Uterine Prolapse,3rd degree UV prolapse. cystocele. vaginal hysterectomy with pelvic floor repair VH+PFR.
+N-5040,ENC-2026-1040,Fracture Shaft Femur,road traffic accident right thigh pain deformity. Xray mid shaft femur fx. closed intramedullary nailing.
+N-5041,ENC-2026-1041,Acute Appendicitis,typical acute appendicitis. lap appy consent taken.
+N-5042,ENC-2026-1042,Symptomatic Cholelithiasis,multiple small GB calculi. pain off and on. lap chole.
+N-5043,ENC-2026-1043,Diabetic Retinopathy,proliferative DR both eyes with vitreous hemorrhage left. vitrectomy LE.
+N-5044,ENC-2026-1044,Coronary Artery Disease (CAD),TVD (triple vessel disease). low EF. CABG (bypass surgery) recommended.
+N-5045,ENC-2026-1045,Epigastric Hernia,epigastric swelling pain on coughing. mesh repair.
+N-5046,ENC-2026-1046,Renal Calculus (Nephrolithiasis),ESWL failed for 12mm stone. proceeding to RIRS with laser lithotripsy.
+N-5047,ENC-2026-1047,Thyroid Nodule,4cm solid cystic nodule right lobe. FNAC benign. hemithyroidectomy planned.
+N-5048,ENC-2026-1048,Hydrocele,massive right primary vaginal hydrocele. eversion of sac adv.
+N-5049,ENC-2026-1049,Abnormal Uterine Bleeding (AUB),refractory AUB. endometrial hyperplasia on biopsy. plan abdominal hysterectomy.
+N-5050,ENC-2026-1050,Fracture Radius Ulna,fall on outstretched hand. b/l bone forearm fx. ORIF with plating.
