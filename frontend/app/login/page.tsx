@@ -30,6 +30,25 @@ export default function LoginPage() {
     }
   };
 
+  const handleDemoLogin = async (demoEmail: string, demoPassword: string = 'admin@123') => {
+    setEmail(demoEmail);
+    setPassword(demoPassword);
+    setLoading(true);
+    setError(null);
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email: demoEmail,
+      password: demoPassword,
+    });
+
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+    } else {
+      router.push('/dashboard');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -99,6 +118,47 @@ export default function LoginPage() {
               </button>
             </div>
           </form>
+
+          <div className="mt-8 pt-6 border-t border-slate-200">
+            <h3 className="text-sm font-medium text-slate-900 mb-4 text-center">Demo Login</h3>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => handleDemoLogin('admin@gmail.com')}
+                className="w-full inline-flex justify-center py-2 px-4 border border-slate-300 rounded-md shadow-sm bg-white text-sm font-medium text-slate-700 hover:bg-slate-50"
+              >
+                Admin
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDemoLogin('doctor@gmail.com')}
+                className="w-full inline-flex justify-center py-2 px-4 border border-slate-300 rounded-md shadow-sm bg-white text-sm font-medium text-slate-700 hover:bg-slate-50"
+              >
+                Doctor (With Data)
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDemoLogin('nurse@gmail.com')}
+                className="w-full inline-flex justify-center py-2 px-4 border border-slate-300 rounded-md shadow-sm bg-white text-sm font-medium text-slate-700 hover:bg-slate-50"
+              >
+                Nurse
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDemoLogin('receptionist@gmail.com')}
+                className="w-full inline-flex justify-center py-2 px-4 border border-slate-300 rounded-md shadow-sm bg-white text-sm font-medium text-slate-700 hover:bg-slate-50"
+              >
+                Receptionist
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDemoLogin('claim_officer@gmail.com')}
+                className="w-full col-span-2 inline-flex justify-center py-2 px-4 border border-slate-300 rounded-md shadow-sm bg-white text-sm font-medium text-slate-700 hover:bg-slate-50"
+              >
+                Claim Officer
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -45,13 +45,12 @@ def client():
 def override_role(client):
     def _override(role_name: str):
         def override_get_current_user():
-            # Mock a user in the test DB or just return a dummy user object
             return User(
-                user_id=uuid.uuid4(),
-                name=f"Test {role_name}",
+                id=f"USR-{uuid.uuid4().hex[:6].upper()}",
+                full_name=f"Test {role_name}",
                 email=f"{role_name.lower()}@test.com",
                 role=role_name,
-                status="ACTIVE"
+                is_active=True
             )
         app.dependency_overrides[get_current_user] = override_get_current_user
     

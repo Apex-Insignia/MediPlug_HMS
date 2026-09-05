@@ -1,117 +1,123 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchApi } from "@/lib/api";
-import { FileBadge, Search, Plus, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { Search, Eye, FileBadge, Filter } from "lucide-react";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { LoadingState } from "@/components/ui/LoadingState";
+import { ErrorState } from "@/components/ui/ErrorState";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { StatusBadge } from "@/components/ui/StatusBadge";
+import { claimsApi, Claim } from "@/lib/api/claims";
 
-export default function ClaimsPage() {
-  const [claims, setClaims] = useState<any[]>([]);
+export default function ClaimsList() {
+  const [claims, setClaims] = useState<Claim[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    async function loadClaims() {
-      try {
-        const data = await fetchApi("/claims");
-        setClaims(data);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
     loadClaims();
   }, []);
 
-  const getStatusBadge = (status: string) => {
-    const colors: Record<string, string> = {
-      'DRAFT': 'bg-slate-100 text-slate-800',
-      'VALIDATING': 'bg-blue-100 text-blue-800',
-      'PREFLIGHT_BLOCKED': 'bg-red-100 text-red-800',
-      'SUBMITTED': 'bg-indigo-100 text-indigo-800',
-      'PROCESSING': 'bg-amber-100 text-amber-800',
-      'APPROVED': 'bg-emerald-100 text-emerald-800',
-      'REJECTED': 'bg-rose-100 text-rose-800'
-    };
-    const css = colors[status] || 'bg-slate-100 text-slate-800';
-    return (
-      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${css}`}>
-        {status}
-      </span>
-    );
-  };
+  async function loadClaims() {
+    try {
+      setLoading(true);
+      const data = await claimsApi.getClaims();
+      setClaims(data);
+      setError(null);
+    } catch (err: any) {
+      setError(err.message || "Failed to load claims");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const filteredClaims = claims.filter(c => 
+    c.claim_id?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    c.encounter_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.patient_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.package_code?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="space-y-6">
-      <div className="sm:flex sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900 flex items-center">
-            <FileBadge className="w-6 h-6 mr-2 text-indigo-600" /> Claims Management
-          </h1>
-          <p className="mt-2 text-sm text-slate-700">
-            Track and process MJPJAY claims across the hospital.
-          </p>
-        </div>
-        <div className="mt-4 sm:mt-0">
-          <Link href="/claims/new" className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none">
-            <Plus className="w-4 h-4 mr-2" />
-            New Claim
-          </Link>
-        </div>
-      </div>
+      <PageHeader 
+        title="Claims Workbench" 
+        description="Manage patient claims, run preflight validation, and monitor approval status."
+      />
 
-      <div className="bg-white shadow rounded-lg border border-slate-200">
-        <div className="p-4 border-b border-slate-200 flex items-center justify-between">
-          <div className="relative rounded-md shadow-sm w-full max-w-md">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-4 w-4 text-slate-400" />
+      <div className="bg-white shadow-sm rounded-lg border border-slate-200">
+        <div className="p-4 border-b border-slate-200">
+          <div className="flex gap-2 max-w-md">
+            <div className="relative flex-grow">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search className="h-4 w-4 text-slate-400" />
+              </div>
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search claims, encounters, packages..."
+                className="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-md leading-5 bg-white placeholder-slate-500 focus:outline-none focus:placeholder-slate-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              />
             </div>
-            <input
-              type="text"
-              className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-slate-300 rounded-md py-2 border"
-              placeholder="Search claims by ID or patient..."
-            />
+            <button className="px-4 py-2 bg-slate-100 text-slate-700 border border-slate-300 rounded-md hover:bg-slate-200 text-sm font-medium shadow-sm inline-flex items-center">
+              <Filter className="h-4 w-4 mr-2" /> Filter
+            </button>
           </div>
         </div>
 
         {loading ? (
-          <div className="p-12 text-center text-slate-500">Loading claims...</div>
+          <LoadingState message="Loading claims..." />
         ) : error ? (
-          <div className="p-12 text-center text-red-500">{error}</div>
-        ) : claims.length === 0 ? (
-          <div className="p-12 text-center text-slate-500">No claims found.</div>
+          <ErrorState message={error} onRetry={() => loadClaims()} />
+        ) : filteredClaims.length === 0 ? (
+          <EmptyState 
+            title="No claims found" 
+            description={searchTerm ? "Try adjusting your search terms." : "There are currently no claims registered in the system."}
+          />
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-slate-200">
               <thead className="bg-slate-50">
                 <tr>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Claim ID</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Patient / Encounter</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Package</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Amount</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
-                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Action</th>
+                  <th scope="col" className="relative px-6 py-3"><span className="sr-only">Actions</span></th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-slate-200">
-                {claims.map((claim) => (
+                {filteredClaims.map((claim) => (
                   <tr key={claim.claim_id} className="hover:bg-slate-50">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">
+                      <Link href={`/claims/${claim.claim_id}`} className="flex items-center gap-2 hover:underline">
+                        <FileBadge className="h-4 w-4 text-slate-400" />
+                        {claim.claim_id}
+                      </Link>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
+                      <div className="font-medium">{claim.patient_id || '-'}</div>
+                      <div className="text-slate-500 text-xs mt-0.5">{claim.encounter_id}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-700">
+                      {claim.package_code}
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
-                      {claim.claim_id.substring(0,8)}...
+                      ₹{claim.claimed_amount?.toLocaleString('en-IN') || 0}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                      {claim.package_code || 'N/A'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                      ₹{claim.claimed_amount || 0}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                      {getStatusBadge(claim.preauth_status)}
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <StatusBadge status={claim.preauth_status || 'Unknown'} />
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <Link href={`/claims/${claim.claim_id}`} className="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
-                        Details <ArrowRight className="ml-1 w-4 h-4" />
-                      </Link>
+                      <div className="flex justify-end">
+                        <Link href={`/claims/${claim.claim_id}`} className="text-blue-600 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-md" title="View Claim">
+                          Workbench
+                        </Link>
+                      </div>
                     </td>
                   </tr>
                 ))}
